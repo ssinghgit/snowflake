@@ -113,7 +113,7 @@ function getInitialState() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 70
+    height: 40
   }
 });
 
@@ -212,7 +212,7 @@ export default function native(platform) {
                        component={Logout}/>
                 
 	        <Scene key="Main"
-                       title="main"
+                       title="NewMain"
                        iconName={"home"}
                        icon={TabIcon}                       
                        hideNavBar={true}

@@ -234,6 +234,11 @@ export function deleteSessionToken() {
  */
 export function getSessionToken() {
   return dispatch => {
+  dispatch(sessionTokenRequestFailure("Not loggedIn"));
+  dispatch(loginState());
+  Actions.Login();
+} ;
+  /*return dispatch => {
     dispatch(sessionTokenRequest());
     return new AppAuthToken().getSessionToken()
 
@@ -248,11 +253,12 @@ export function getSessionToken() {
       })
     
       .catch((error) => {
-        dispatch(sessionTokenRequestFailure(error));
-        dispatch(loginState());
+        
+                dispatch(loginState());
         Actions.InitialLoginForm();
       });
   };
+  */
 }
 
 /**
@@ -349,9 +355,15 @@ export function loginFailure(error) {
  */
 
 export function login(username,  password) {
+  //Santosh to revisit 
   return dispatch => {
+    var json = {};
     dispatch(loginRequest());
-    return BackendFactory().login({
+     dispatch(loginSuccess(json));
+      // navigate to Tabbar
+      Actions.Tabbar();                    
+      dispatch(logoutState());
+    /*return BackendFactory().login({
       username: username,
       password: password
     })
@@ -368,6 +380,7 @@ export function login(username,  password) {
       .catch((error) => {
 	dispatch(loginFailure(error));
       });
+      */
   };
 }
 
