@@ -1,3 +1,5 @@
+import MapView from 'react-native-maps';
+
 /**
  * # Login.js
  * 
@@ -23,6 +25,14 @@ import * as authActions from '../reducers/auth/authActions';
  */ 
 import {Map} from 'immutable';
 
+import
+{  
+  StyleSheet,
+  View,
+  Text
+}
+from 'react-native';
+
 /**
  *   LoginRender
  */
@@ -32,7 +42,7 @@ import LoginRender from '../components/LoginRender';
  * The necessary React components
  */
 import React from 'react';
-
+const AppAuthToken = require('../lib/AppAuthToken').default;
 const {
   LOGIN,
   REGISTER, 
@@ -53,6 +63,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+	console.log(MapView);
   const creators = Map()
           .merge(...actions)
           .filter(value => typeof value === 'function')
@@ -63,32 +74,47 @@ function mapDispatchToProps(dispatch) {
     dispatch
   };
 }
-
-function buttonPressHandler(login, username, password,passwordAgain) {
-  login (username, password,passwordAgain);
+var styles = StyleSheet.create({
+	map: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  container: {
+    borderTopWidth: 2,
+    borderBottomWidth:2,
+    marginTop: 80,
+    padding: 10
+  },
+  summary: {
+    fontFamily: 'BodoniSvtyTwoITCTT-Book',
+    fontSize: 18,
+    fontWeight: 'bold'
+  }
+});
+function buttonPressHandler(login, username, password) {
+  login (username, password);
 }
 
 let Login = React.createClass({
 
   render() {
     let loginButtonText = 'Log in';
-    let onButtonPress = buttonPressHandler.bind(null,
-				                this.props.actions.login,
-				                this.props.auth.form.fields.username, 
-				                this.props.auth.form.fields.password,
-                        this.props.auth.form.fields.passwordAgain
-		                               );
+    new AppAuthToken().deleteSessionToken();
 
     return(
-      <LoginRender 
-          formType={ LOGIN }
-          loginButtonText={ loginButtonText }
-          onButtonPress={ onButtonPress }
-          displayPasswordCheckbox={ false }
-          
-          auth={ this.props.auth }
-          global={ this.props.global }
-      />
+    
+        <MapView style={styles.map}
+		    initialRegion={{
+		      latitude: 37.78825,
+		      longitude: -122.4324,
+		      latitudeDelta: 0.0922,
+		      longitudeDelta: 0.0421,
+		    }}
+  		/>
+  		
     );
   }
 });

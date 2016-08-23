@@ -30,6 +30,10 @@ var InitialState = Record({
   currentUser: null,
   showState: false,
   currentState: null,
-  store: null
+  currentUserPw:null,
+  currentBase64:null,
+  store: null,
+  db:null,
+  conn:null
 });
 export default InitialState;

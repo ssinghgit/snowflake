@@ -68,6 +68,16 @@ var LoginForm = React.createClass({
       hasError: this.props.form.fields.usernameHasError,
       error: this.props.form.fields.usernameErrorMsg
     };
+
+    let serverurl= {
+      label: 'Server URL',
+   //   secureTextEntry: secureTextEntry,
+      maxLength: 100,
+      editable: !this.props.form.isFetching,
+      hasError: this.props.form.fields.passwordAgainHasError,
+      error: this.props.form.fields.passwordAgainErrorMsg
+    };
+    
     
     let email = {
       label: 'Email',
@@ -89,12 +99,10 @@ var LoginForm = React.createClass({
     };
 
     let passwordAgain= {
-      label: 'Please enter password again',
-      secureTextEntry: secureTextEntry,
-      maxLength: 12,
-      editable: !this.props.form.isFetching,
-      hasError: this.props.form.fields.passwordAgainHasError,
-      error: this.props.form.fields.passwordAgainErrorMsg
+      label: 'Server URL',
+   //   secureTextEntry: secureTextEntry,
+      maxLength: 100,
+      editable: !this.props.form.isFetching
     };
 
     let loginForm;
@@ -125,11 +133,16 @@ var LoginForm = React.createClass({
     case(LOGIN):
       loginForm = t.struct({
         username: t.String,
-        password: t.String
+        password: t.String,
+        passwordAgain: t.String
+
+        //,serverurl:t.string
       });
       options.fields['username'] = username;
       options.fields['username'].autoCapitalize = 'none';
       options.fields['password'] = password;
+       options.fields['passwordAgain'] = passwordAgain;
+      //options.fields['serverurl'] = serverurl;
       break;
       
       /**

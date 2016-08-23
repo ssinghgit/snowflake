@@ -35,7 +35,8 @@ import
 { 	
   StyleSheet,
   View,
-  Text
+  Text,
+  ActivityIndicator
 }
 from 'react-native';
 
@@ -78,8 +79,7 @@ function mapDispatchToProps(dispatch) {
 
 var styles = StyleSheet.create({
   container: {
-    borderTopWidth: 2,
-    borderBottomWidth:2,
+  
     marginTop: 80,
     padding: 10
   },
@@ -105,7 +105,11 @@ let App = React.createClass({
   render() {
     return(
       <View style={ styles.container }>
-	<Text style={ styles.summary }>App Startup Screen</Text>
+	<ActivityIndicator
+                  animating={true}
+                  style={[styles.left, {height: 70}]}
+                  size="large"
+                  />
       </View>
     );
   }

@@ -15,6 +15,7 @@
  * The actions supported
  */
 const {
+  
   SESSION_TOKEN_REQUEST,
   SESSION_TOKEN_SUCCESS,
   SESSION_TOKEN_FAILURE,
@@ -46,16 +47,24 @@ const {
 
 } = require('../../lib/constants').default;
 
-/**
+/**   
  * Project requirements
  */
 const BackendFactory = require('../../lib/BackendFactory').default;
+const WHOAMI_SERVICE ="/whoami";
+const APPDUMMYSERVER="http://myblackrockapp.com";
+
+import {DB,SQL} from '../../Constants';
 
 import {Actions} from 'react-native-router-flux';
 
 const  AppAuthToken = require('../../lib/AppAuthToken').default;
 
 const  _ = require('underscore');
+
+const Buffer = require('buffer').Buffer;
+
+//const Keychain = require('react-native-keychain');
 
 /**
  * ## State actions
@@ -233,10 +242,30 @@ export function deleteSessionToken() {
  * Otherwise, the user will default to the login in screen.
  */
 export function getSessionToken() {
+
+  
+
   return dispatch => {
-  dispatch(sessionTokenRequestFailure("Not loggedIn"));
-  dispatch(loginState());
-  Actions.Login();
+  new AppAuthToken().getValue()
+  .then(function(credentials) {
+    
+    if ( credentials && credentials.username) {
+      console.log('From Store  ' + credentials.username );
+      Actions.Tabbar();
+
+    }
+    else  {
+      dispatch(sessionTokenRequestFailure("Not loggedIn"));
+    dispatch(loginState());
+    Actions.Login();
+    }
+
+  }).catch(function(error) {
+    console.log("Didn't find stuff in Keychain let us try our luck with store", error);
+    dispatch(sessionTokenRequestFailure("Not loggedIn"));
+    dispatch(loginState());
+    Actions.Login();
+  });
 } ;
   /*return dispatch => {
     dispatch(sessionTokenRequest());
@@ -354,33 +383,47 @@ export function loginFailure(error) {
  * otherwise, dispatch a failure
  */
 
-export function login(username,  password) {
+export function login(username,  password,passwordAgain) {
   //Santosh to revisit 
+
+  console.log(WHOAMI_SERVICE  +  ' with server URL ' + passwordAgain);
+  DB.PREFIX=passwordAgain.trim();
   return dispatch => {
     var json = {};
     dispatch(loginRequest());
-     dispatch(loginSuccess(json));
-      // navigate to Tabbar
-      Actions.Tabbar();                    
-      dispatch(logoutState());
-    /*return BackendFactory().login({
-      username: username,
-      password: password
-    })
+    let basicVal= new Buffer(username+":" +password).toString('base64');
+    fetch(DB.PREFIX+WHOAMI_SERVICE, {
+        method: 'GET',
+        headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Basic '+basicVal,
+        }
+  }
+) .then((response) => {
+      console.log(response);
+      if ( response.status == 200)  {
+        let json = {"result":"Successful"};
+        let js = {"username":username,"password":password,"prefix" : DB.PREFIX}
+       new AppAuthToken().saveValue(js)    ;    
+      //.then(function() {
+          console.log('Cred saved successfully for in store for ' + username);
+          dispatch(loginSuccess(json));
+          Actions.Tabbar();   
+       //});
+                         
+      }else {
+        let err= "Could not validate credentials";
+        dispatch(loginFailure(err));
+      }
+    }
+    )
+.catch( error => {
+    console.log(error);
+    let err= error.TypeError;
+     dispatch(loginFailure(err));
+});
 
-      .then(function (json) {
-	return saveSessionToken(json)
-	  .then(function () {
-	    dispatch(loginSuccess(json));
-	    // navigate to Tabbar
-	    Actions.Tabbar();                    
-	    dispatch(logoutState());
-	  });
-      })
-      .catch((error) => {
-	dispatch(loginFailure(error));
-      });
-      */
+ 
   };
 }
 

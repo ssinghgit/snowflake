@@ -12,7 +12,8 @@
  */
 const {
   SET_SESSION_TOKEN,
-
+ GLB_OPEN_DB,
+  GLB_DB_SUCCESS,
   GET_PROFILE_SUCCESS,
   SIGNUP_SUCCESS,
   LOGIN_SUCCESS,
@@ -58,6 +59,9 @@ export default function globalReducer(state = initialState, action) {
     
   case SESSION_TOKEN_SUCCESS:
     return state.set('currentUser',action.payload.sessionToken);
+
+  case GLB_DB_SUCCESS:
+   return state.set('db',action.payload);
 
     /**
      * ### Clear currentUser

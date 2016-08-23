@@ -10,7 +10,12 @@
  */
 'use strict';
 
-const  {Record} = require('immutable');
+const  {Record} = require('immutable'); 
+import
+{
+ListView
+}
+from 'react-native';
 
 /**
  * ## Form
@@ -31,6 +36,8 @@ const Form = Record({
   error: null,
   isValid: false,
   isFetching: false,
+  searchTerm:'',
+  searchEnabled:false,
   fields: new (Record({
     username: '',
     usernameHasError: false,
@@ -43,8 +50,12 @@ const Form = Record({
 });
 
 
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+var res= ds.cloneWithRows( [] );
+
 var InitialState = Record({
   form: new Form
+  ,results:res
 });
 
 export default InitialState;

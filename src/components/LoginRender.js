@@ -175,6 +175,7 @@ class LoginRender extends Component {
     if (value.passwordAgain != '') {
       this.props.actions.onAuthFormFieldChange('passwordAgain',value.passwordAgain);
     }
+    
     this.setState(
       {value}
     );

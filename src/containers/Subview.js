@@ -121,6 +121,7 @@ let Subview = React.createClass({
 	<Text style={ styles.summary }>Subview Version: {this.props.device.version} </Text>
 	</View>
       </View>
+      
     );
   }
 });

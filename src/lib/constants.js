@@ -1,6 +1,19 @@
 import keyMirror from 'key-mirror';
 
 export default keyMirror({
+
+  /// Santosh Variable Start
+
+  //WHOAMI_SERVICE:"http://192.168.1.6:8080/whoami",
+
+  FETCH_EMPCACHE : null,
+  SEARCHTERM_CHANGED :null,
+  SEARCH_EMP_REQUEST:null,
+  SEARCH_EMP_SUCCESS:null,
+  EMPCACHE_FETCHED:null, 
+  GLB_OPEN_DB:null,
+  GLB_DB_SUCCESS:null,
+  
   SET_PLATFORM: null,
   SET_VERSION: null,
 

@@ -11,12 +11,13 @@
  */
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import Icon from 'react-native-vector-icons/MaterialIcons'
 /**
  * The actions we need
  */
 import * as authActions from '../reducers/auth/authActions';
 import * as globalActions from '../reducers/global/globalActions';
+import * as profileActions from '../reducers/profile/profileActions';
 
 /**
  * Immutable
@@ -40,14 +41,23 @@ import React, {Component} from 'react';
 import
 {
   StyleSheet,
-  View
+  View,
+ActivityIndicator,
+Dimensions,
+TextInput,
+Text,
+ListView,
+TouchableHighlight,
+Image
 }
 from 'react-native';
+
 
 /**
  * The platform neutral button
  */
 const  Button = require('apsl-react-native-button');
+let deviceWidth = Dimensions.get('window').width
 
 
 /**
@@ -56,7 +66,8 @@ const  Button = require('apsl-react-native-button');
  */
 const actions = [
   authActions,
-  globalActions  
+  globalActions,
+  profileActions,
 ];
 
 /**
@@ -80,8 +91,7 @@ function mapDispatchToProps(dispatch) {
   const creators = Map()
           .merge(...actions)
           .filter(value => typeof value === 'function')
-          .toObject();
-
+          .toObject();  
   return {
     actions: bindActionCreators(creators, dispatch),
     dispatch
@@ -93,16 +103,80 @@ var styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1    
   },
+   search: {
+    width: 30,
+    marginTop: 10
+  },
   summary: {
     fontFamily: 'BodoniSvtyTwoITCTT-Book',
     fontSize: 18,
     fontWeight: 'bold'
   },
   button: {
-    backgroundColor: '#FF3366',
-    borderColor:  '#FF3366',
+    backgroundColor: '#006bb4',
+    borderColor:  '#006bb4',
+    color:'#FFFFFF',
     marginLeft: 10,
     marginRight: 10    
+  },
+   textStyle: {
+    color: 'white'
+  },
+  backIcon: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    width: 40
+  },
+   header: {
+    flexDirection: 'row',
+    width: deviceWidth,
+    height: 50,
+    backgroundColor: '#006bb4'
+  },
+   input: {
+    height: 50,
+    padding: 5,
+    width: deviceWidth - 40,
+    color: '#fff'
+  },
+   separator: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#8E8E8E',
+  },
+  listView: {
+    backgroundColor: '#FFFFFF',
+  },
+   rightContainer: {
+    flex: 1,
+    marginTop: 5,
+    paddingLeft: 5
+  },
+  thumbnail: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,      
+    marginBottom: 5,
+  },
+  name: {
+    fontSize: 15,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+   tableCell: {
+    paddingLeft: 5,
+    paddingRight: 5,
+    flexDirection: 'row',
+  },
+   login: {
+    textAlign: 'center',
+  },
+   photo: {
+    height: 40,
+    width: 40,
+    marginTop: 5,
+    borderRadius: 20,
   }
 });
 
@@ -110,6 +184,12 @@ var styles = StyleSheet.create({
  * ## App class
  */
 class Main extends Component {
+
+  
+   componentWillMount() {
+    this.props.actions.getEmployeeCache();
+    //dispatch(fetchSongsIfNeeded(playlist))
+  } 
   
   handlePress() {
     Actions.Subview({
@@ -118,19 +198,68 @@ class Main extends Component {
     });
   }
   
+
+
   render() {
+    let spinner = <Text> </Text>;
+    if ( this.props.profile.form.isFetching ) {
+      spinner = <ActivityIndicator
+                  animating={true}
+                  style={[styles.left, {height: 50}]}
+                  size="small"
+                  />
+    }
+
+   let  textOnButton= 'Results Count = ';
+
+    
+
+    
+          
+          
+
+
+
     return(
       <View style={styles.container}>
         <View>
-        <Header isFetching={this.props.auth.form.isFetching}
-                showState={this.props.global.showState}
-                currentState={this.props.global.currentState}
-                onGetState={this.props.actions.getState}
-                onSetState={this.props.actions.setState}
-        />        
-    	<Button style={ styles.button } onPress={ this.handlePress.bind(this) }>
-	  {'Navigate to Subview'}
-        </Button>
+       
+         <View style={styles.header}>         
+          <Icon name="search" style={styles.search} size={30} color="#FFF" />
+          <TextInput
+           style={styles.input}
+          onChangeText={this.props.actions.searchTermChanged}
+          //placeholder={this.props.profile.form.searchTerm}    
+            //placeholder={'Search Employees'}
+            placeholderTextColor={'#E2E2E2'}
+            underlineColorAndroid={'#3a3f41'}
+          //  onSubmitEditing={this.onSubmitEditing}
+            autoFocus={true}
+            autoCorrect={false}   
+            value={this.props.profile.form.searchTerm}         
+          />
+        </View>
+        {spinner}
+         <ListView dataSource={this.props.profile.results}
+             style={styles.listView}
+           renderRow={(emp, sectionId, rowId) => {
+            return (
+            <TouchableHighlight >
+              <View style={styles.tableCell}>
+                  <Image source={{ uri: emp.picture}} style={styles.photo} />
+                <View style={styles.rightContainer}>
+                  <Text style={styles.name}>{emp.first_name + " " + emp.last_name}</Text>
+                  <Text style={styles.login}>{"Login: " + emp.login}</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
+            )
+            }}
+            renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
+
+
+           /> 
+    
         </View>
       </View>
     );

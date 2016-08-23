@@ -38,7 +38,7 @@ const Form = Record({
     password: '',
     passwordHasError: false,
     passwordErrorMsg: '',
-    passwordAgain: '',
+    passwordAgain: 'https://dev.blackrock.com/myblackrock',
     passwordAgainHasError: false,
     passwordAgainErrorMsg: '',    
     showPassword: false

@@ -55,7 +55,7 @@ var styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   mark: {
-    width: 50,
+    width: 150,
     height: 50
   }
 });
@@ -125,31 +125,34 @@ var Header = React.createClass({
    *
    */
   render() {
-    let showState = <Text> </Text>;
+    let displayText = "search";
+    let showState =  <Text></Text>;/*<View style={styles.container}>
+        <Text>Current State (see console)</Text>
+        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                   value={displayText}
+                   editable={true}
+                   multiline={true}
+                   onChangeText={(text) => this._onChangeText(text)}
+                   numberOfLines={1}>
+        </TextInput>       
+      </View>;
+      */
     if (this.props.showState) {
-      let displayText = JSON.stringify(this.props.currentState);
+      let displayText = JSON.stri
+      ngify(this.props.currentState);
       
      console.log(displayText);
 
       showState =
       <View style={styles.container}>
         <Text>Current State (see console)</Text>
-        <TextInput style={{height: 100, borderColor: 'gray', borderWidth: 1}}
+        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                    value={displayText}
                    editable={true}
                    multiline={true}
                    onChangeText={(text) => this._onChangeText(text)}
-                   numberOfLines={20}>
-        </TextInput>
-        <View style={{
-            marginTop: 10
-          }}>
-          <FormButton  isDisabled={this.state.isDisabled}
-                       onPress={this._updateStateButtonPress}
-                       buttonText={'Update State'}>
-          </FormButton>
-          
-        </View>
+                   numberOfLines={1}>
+        </TextInput>       
       </View>
     }
     
@@ -168,7 +171,7 @@ var Header = React.createClass({
           <TouchableHighlight onPress={this._onPressMark}>
 
             <Image style={styles.mark} source={{uri:
-                                                'http://i.imgur.com/da4G0Io.png'}}
+                                                'https://www.blackrock.com/blk-corp-assets/include/common/images/blackrock_logo.png'}}
             />
           </TouchableHighlight>
           {spinner}

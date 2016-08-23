@@ -67,6 +67,9 @@ import com.android.build.OutputFile
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -96,6 +99,14 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+      signingConfigs {
+        release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
+        }
+    }
     splits {
         abi {
             reset()
@@ -108,6 +119,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -135,6 +147,15 @@ dependencies {
 
     // Added this line:
     compile project(':RNSimpleAlertDialogModule')
+    // ADd this line 
+    compile project(':react-native-keychain')
+    //Add one more
+    compile project(':react-native-sqlite-storage')
+
+
+    compile 'com.airbnb.android:react-native-maps:0.5.0'
+
+    
 
 }
 

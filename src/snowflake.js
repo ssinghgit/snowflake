@@ -19,7 +19,9 @@ import {
   Navigator,
   StyleSheet,
   View,
-  Text } from 'react-native';
+  Text,
+  Dimensions
+} from 'react-native';
 
 /**
  * ### Router-Flux
@@ -57,6 +59,7 @@ import configureStore from './lib/configureStore';
  */
 import App from './containers/App';
 import Login from './containers/Login';
+import Map from './containers/Map';
 import Logout from './containers/Logout';
 import Register from './containers/Register';
 import ForgotPassword from './containers/ForgotPassword';
@@ -77,7 +80,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
  *  The necessary actions for dispatching our bootstrap values
  */
 import {setPlatform, setVersion} from './reducers/device/deviceActions';
-import {setStore} from './reducers/global/globalActions';
+import {setStore,openDB} from './reducers/global/globalActions';
 
 /**
  * ## States
@@ -94,7 +97,8 @@ import profileInitialState from './reducers/profile/profileInitialState';
  */
 import pack from '../package';
 var VERSION=pack.version;
-
+let deviceWidth = Dimensions.get('window').width
+console.disableYellowBox = true;
 /**
  *
  * ## Initial state
@@ -112,8 +116,21 @@ function getInitialState() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    height: 40
+  map: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+   tabbar: {
+    flexDirection: 'row',
+    width: deviceWidth,
+    height: 50,
+    backgroundColor: '#006bb4'
+  },
+  tabbar2:{
+    backgroundColor:'#006bb4' 
   }
 });
 
@@ -125,7 +142,7 @@ const styles = StyleSheet.create({
 
 class TabIcon extends React.Component {
   render(){
-    var color = this.props.selected ? '#FF3366' : '#FFB3B3';
+    var color = this.props.selected ? '#006bb4' : '#4F8DB8';
     return (
         <View style={{flex:1, flexDirection:'column', alignItems:'center', alignSelf:'center'}}>
         <Icon style={{color: color}} name={this.props.iconName} size={30} />
@@ -156,13 +173,14 @@ export default function native(platform) {
       store.dispatch(setPlatform(platform));
       store.dispatch(setVersion(VERSION));
       store.dispatch(setStore(store));
+      store.dispatch(openDB());  
       
       // setup the router table with App selected as the initial component
       // note: See https://github.com/aksonov/react-native-router-flux/issues/948 
       return (
         <Provider store={store}>
 
-	  <Router sceneStyle={{ backgroundColor: 'white' }}>
+	  <Router sceneStyle={{ backgroundColor: 'white' }}>    
 	    <Scene key="root"
                    hideNavBar={true}>
               
@@ -183,51 +201,40 @@ export default function native(platform) {
                      title="Login" 
                      type="replace"/>
 	      
-	      <Scene key="Register"
-                     component={Register}
-                     title="Register"
-                     type="replace" />
-	      
-	      <Scene key="ForgotPassword"
-                     component={ForgotPassword}
-                     title="ForgotPassword" 
-                     type="replace"/>
-	      
-	      <Scene key="Subview"
-                     component={Subview}
-                     title="Subview"
-              />
+	     
 
 	      <Scene key="Tabbar"
                      tabs={true}
                      hideNavBar={true}
                      tabBarStyle={ styles.tabBar }
                      default="Main">
-                
-	        <Scene key="Logout"
-                       title="logout"
-                       icon={TabIcon}
-                       iconName={"sign-out"}
-                       hideNavBar={true}
-                       component={Logout}/>
+        
                 
 	        <Scene key="Main"
-                       title="NewMain"
+                       title="Home"
                        iconName={"home"}
                        icon={TabIcon}                       
                        hideNavBar={true}
                        component={Main}
                        initial={true}/>
 
-                <Scene key="Profile"
-                       title="profile"
+          <Scene key="Logout"
+                       title="Offices"
+                       icon={TabIcon}
+                       iconName={"map"}
+                       hideNavBar={true}
+                       component={Map}/>            
+
+                <Scene key="Settings"
+                       title="Settings"
                        icon={TabIcon}                       
                        iconName={"gear"}
                        hideNavBar={true}
                        component={Profile}/>
 	      </Scene>
-	    </Scene>
+	    </Scene> 
 	  </Router>
+   
         </Provider>
       );
     }
@@ -236,5 +243,5 @@ export default function native(platform) {
    * registerComponent to the AppRegistery and off we go....
    */
 
-  AppRegistry.registerComponent('snowflake', () => Snowflake);
+  AppRegistry.registerComponent('MyBLK', () => Snowflake);
 }

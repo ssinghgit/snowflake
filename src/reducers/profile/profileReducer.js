@@ -19,6 +19,12 @@ const formValidation = require('./profileFormValidation').default;
  *
  */
 const {
+  
+  SEARCHTERM_CHANGED,
+  SEARCH_EMP_REQUEST,
+  SEARCH_EMP_SUCCESS,
+  EMPCACHE_FETCHED,
+  FETCH_EMPCACHE,
   ON_PROFILE_FORM_FIELD_CHANGE,
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,
@@ -40,6 +46,12 @@ const {
 const InitialState = require('./profileInitialState').default;
 const initialState = new InitialState;
 
+import
+{
+ListView
+}
+from 'react-native';
+
 /**
  * ## profileReducer function
  * @param {Object} state - initialState 
@@ -47,7 +59,7 @@ const initialState = new InitialState;
  */
 export default function profileReducer(state = initialState, action) {
   let nextProfileState = null;
-
+  var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
   if (!(state instanceof InitialState)) return initialState.mergeDeep(state);
 
   switch (action.type) {
@@ -59,6 +71,29 @@ export default function profileReducer(state = initialState, action) {
   case PROFILE_UPDATE_REQUEST:
     return state.setIn(['form', 'isFetching'], true)
       .setIn(['form','error'],null);
+
+  case EMPCACHE_FETCHED:
+   return state.setIn(['form', 'isFetching'],false)
+          .setIn(['form', 'searchEnabled'],true)
+
+  case FETCH_EMPCACHE:
+     return state.setIn(['form', 'isFetching'],true)
+          .setIn(['form', 'searchEnabled'],false)
+
+  case SEARCH_EMP_REQUEST:
+     return state.setIn(['form', 'isFetching'],true)
+
+case SEARCH_EMP_SUCCESS:
+     return state.setIn(['form', 'isFetching'],false) 
+     .setIn(['results'],  ds.cloneWithRows( action.payload))                
+
+  case SEARCHTERM_CHANGED:
+    return state
+      .setIn(['form','searchTerm'],action.payload)
+      .setIn(['form', 'isFetching'],(action.payload.length > 2))
+      ;        
+      if ( action.payload <3 ) 
+        state. setIn(['results'],  ds.cloneWithRows( [] )) 
 
     /**
      * ### Request end successfully

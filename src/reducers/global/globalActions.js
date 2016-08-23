@@ -14,8 +14,48 @@ const {
   SET_SESSION_TOKEN,
   SET_STORE,
   SET_STATE,
-  GET_STATE
+  GET_STATE,
+  GLB_OPEN_DB,
+  GLB_DB_SUCCESS
 } = require('../../lib/constants').default;
+
+
+//import SQLLite from 'react-native-sqlite-storage';
+
+import {DB,SQL} from '../../Constants';
+var SQLite = require('react-native-sqlite-storage') 
+
+
+
+function errorCB(err) {
+  console.log("SQL Error: " + err);
+}
+
+function successCB() {
+  console.log("SQL executed fine");
+}
+
+function openCB() {
+  console.log("Database OPENED from GlobalActions");
+}
+
+
+export function openDB() {
+ return  dispatch =>{
+ DB.dataconn = SQLite.openDatabase(DB.databaseName, "1.0", "MYBLK DB", 200000, openCB, errorCB);
+  
+  //dispatch(dbOpenSuccess(db));
+ }
+  
+
+}
+export function dbOpenSuccess(db){
+  return {
+    type: GLB_DB_SUCCESS,
+    payload: db
+  };
+}   
+
 
 /**
  * ## set the sessionToken
